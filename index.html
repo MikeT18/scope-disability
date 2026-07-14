@@ -139,8 +139,10 @@
 
 <nav class="kitnav">
   <div class="kitnav-inner">
+    <span class="grp">FRONT PAGE</span>
+    <button data-s="home" class="nb active">Home</button>
     <span class="grp">HOME</span>
-    <button data-s="r1" class="nb active">Employer hub</button>
+    <button data-s="r1" class="nb">Employer hub</button>
     <span class="grp">RECRUITMENT</span>
     <button data-s="rHub" class="nb">Tools</button>
     <button data-s="r2" class="nb">Advert</button>
@@ -173,7 +175,45 @@
 <main><div class="wrap">
 
   <!-- R1 employer hub -->
-  <section id="r1" class="screen active">
+  <!-- HOME — front page -->
+  <section id="home" class="screen active">
+    <span class="caption">Prototype</span>
+    <h1>Disability Confident Portal</h1>
+    <p class="bl">Four separate journeys, not one linear path. Each opens independently and can be used on its own — nothing here requires you to complete another one first.</p>
+
+    <div class="grid2">
+      <a class="card nb" data-s="rHub">
+        <h3>1. Recruitment &rarr;</h3>
+        <p>Check a job advert or interview plan before you hire.</p>
+        <p class="hint" style="margin:8px 0 0;">Used by recruiters and hiring managers</p>
+      </a>
+      <a class="card nb" data-s="oHub">
+        <h3>2. Onboarding &rarr;</h3>
+        <p>Support a new starter from day one, whoever hired them.</p>
+        <p class="hint" style="margin:8px 0 0;">Used by line managers and HR</p>
+      </a>
+      <a class="card nb" data-s="aHub">
+        <h3>3. Adjustments &rarr;</h3>
+        <p>Check a workplace barrier and get advice on fair support.</p>
+        <p class="hint" style="margin:8px 0 0;">Used by line managers and HR, any time</p>
+      </a>
+      <a class="card nb" data-s="p1">
+        <h3>4. Employee support &rarr;</h3>
+        <p>Guidance for jobseekers and employees themselves.</p>
+        <p class="hint" style="margin:8px 0 0;">Used by candidates and employees directly</p>
+      </a>
+    </div>
+
+    <div class="inset" style="margin-top:24px;">
+      <p style="margin:0; font-weight:700;">Why these are separate</p>
+      <p style="margin:6px 0 0;">A person can be onboarded, or need an adjustment, without their advert or interview ever having been checked here. Forcing one linear journey would break for anyone hired outside this tool, or any adjustment raised outside recruitment entirely.</p>
+    </div>
+
+    <p style="margin-top:20px;"><button class="btn btn-start nb" data-s="r1">Explore the employer tools together &rarr;</button></p>
+  </section>
+
+  <section id="r1" class="screen">
+    <a href="#" class="back nb" data-s="home">Back to front page</a>
     <span class="caption">Disability Confident support</span>
     <h1>Support for employers</h1>
     <p class="bl">Three independent tools. Use whichever one fits what you need right now — there's no set order.</p>
@@ -374,27 +414,37 @@
   <section id="a1" class="screen">
     <a href="#" class="back nb" data-s="aHub">Back to adjustments</a>
     <span class="caption">Adjustments</span>
-    <h1>Raise an adjustment request — Priya Shah</h1>
-    <p>Describe the workplace barrier, not a diagnosis — this keeps the focus on what would help.</p>
-    <label class="lbl" for="barrier">What's the barrier?</label>
-    <textarea id="barrier" rows="4" placeholder="e.g. Priya finds long, unstructured meetings hard to follow and retain information from."></textarea>
-    <p style="margin-top:18px;"><button class="btn" onclick="exploreOptions()">Explore options</button></p>
-    <p class="rule-note">Logic: mentions of "meeting" or "agenda" recommend the agenda/notes options below. Mentions of "noise", "light" or "sensory" recommend an environment change instead. Mentions of "capability", "legal", "long-term" or "complex" automatically flag the case for escalation.</p>
+    <h1>Check an adjustment situation — Priya Shah</h1>
+    <p>Describe the workplace barrier, not a diagnosis. We'll check it against Disability Confident guidance and suggest what to do next.</p>
+    <label class="lbl" for="situation">Describe the situation</label>
+    <textarea id="situation" rows="4" placeholder="e.g. Priya finds long, unstructured meetings hard to follow and retain information from."></textarea>
+    <div class="err" id="situationErr"><p>Describe the situation before checking it.</p></div>
+    <p style="margin-top:18px;"><button class="btn" onclick="checkSituation()">Check situation</button></p>
+    <p class="rule-note">Logic: mentions of "meeting" or "agenda" are checked against environmental/format barriers. Mentions of "noise", "light" or "sensory" are checked against physical environment barriers. Mentions of "capability", "legal", "long-term" or "complex" are flagged as a finding that needs escalation.</p>
   </section>
 
-  <!-- A2 decision guide -->
+  <!-- A2 checker results + decision guide -->
   <section id="a2" class="screen">
     <a href="#" class="back nb" data-s="a1">Back</a>
     <span class="caption">Adjustments</span>
-    <h1>Reasonable adjustment decision guide — Priya Shah</h1>
+    <h1>Adjustment checker — Priya Shah</h1>
     <p class="hint">Guidance, not legal advice. For complex or high-risk cases, involve HR or occupational health.</p>
-    <div class="esc-flag" id="escFlag"><strong>Flagged for escalation</strong> — this description mentions something outside standard guidance. Recommend using "This needs escalating" below rather than agreeing a decision here.</div>
+
+    <h2>What we found</h2>
+    <table style="width:100%; border-collapse:collapse;" id="findingsTable">
+      <tr><td style="padding:11px 0;"><strong>Meeting format barrier</strong><br><span style="font-size:15px; color:var(--p-grey-1);">The situation centres on how meetings are run or structured — usually addressable without specialist input.</span></td><td style="padding:11px 0; text-align:right;"><span class="status status-med">Medium</span></td></tr>
+    </table>
+
+    <p class="hint" style="margin-top:8px;">Description on file: "Priya finds long, unstructured meetings hard to follow and retain information from."</p>
+
+    <h2>Recommended actions</h2>
     <div id="decisionOptions">
       <div class="decision-opt selected"><div><h3 style="margin:0 0 4px;">Share agenda and key points in advance</h3><p style="margin:0; font-size:15px; color:var(--p-grey-1);">Low cost, quick to implement, addresses the barrier directly.</p></div><span class="status status-done">Recommended</span></div>
       <div class="decision-opt"><div><h3 style="margin:0 0 4px;">Provide written follow-up notes after each meeting</h3><p style="margin:0; font-size:15px; color:var(--p-grey-1);">Complements the above; low cost.</p></div><span class="status status-low">Optional</span></div>
       <div class="decision-opt"><div><h3 style="margin:0 0 4px;">Reduce meeting frequency</h3><p style="margin:0; font-size:15px; color:var(--p-grey-1);">May affect team coordination — check with Priya before applying.</p></div><span class="status status-med">Needs discussion</span></div>
     </div>
     <p style="margin-top:18px;"><button class="btn nb" data-s="a4">Agree and record decision</button> <button class="btn btn-sec nb" data-s="a3">This needs escalating</button></p>
+    <p class="rule-note">The checker (above) and the advice (below) are two steps of the same tool — like the advert and interview checkers, you see what was found before you see what to do about it.</p>
   </section>
 
   <!-- A3 escalation -->
@@ -630,15 +680,46 @@
   renderDashboard();
 
   // --- Adjustment request / decision guide logic ---
-  function exploreOptions(){
-    var text = document.getElementById('barrier').value.toLowerCase();
+  function checkSituation(){
+    var text = document.getElementById('situation').value.trim();
+    var errBox = document.getElementById('situationErr');
+    if(text.length === 0){
+      errBox.classList.add('show');
+      return;
+    }
+    errBox.classList.remove('show');
+    var lower = text.toLowerCase();
+
+    var meetingMatch = /meeting|agenda/.test(lower);
+    var sensoryMatch = /noise|light|sensory/.test(lower);
+    var escalationMatch = /capability|legal|long-term|complex/.test(lower);
+
+    // Build findings — same pattern as the advert/interview checkers
+    var findings = [];
+    if(meetingMatch){
+      findings.push({ label: "Meeting format barrier", desc: "The situation centres on how meetings are run or structured — usually addressable without specialist input.", severity: "med" });
+    }
+    if(sensoryMatch){
+      findings.push({ label: "Physical environment barrier", desc: "The situation relates to noise, lighting or sensory environment — usually addressable through workspace changes.", severity: "med" });
+    }
+    if(escalationMatch){
+      findings.push({ label: "Complexity signal detected", desc: "Wording suggests this may go beyond standard workplace adjustments — consider escalating rather than agreeing a decision here.", severity: "high" });
+    }
+    if(findings.length === 0){
+      findings.push({ label: "General barrier described", desc: "No specific pattern matched — general adjustment guidance applies below.", severity: "low" });
+    }
+
+    var table = document.getElementById('findingsTable');
+    table.innerHTML = findings.map(function(f, i){
+      var statusClass = f.severity === 'high' ? 'status-high' : f.severity === 'med' ? 'status-med' : 'status-low';
+      var statusLabel = f.severity === 'high' ? 'High' : f.severity === 'med' ? 'Medium' : 'Low';
+      var borderStyle = i < findings.length - 1 ? 'border-bottom:1px solid var(--p-grey-3);' : '';
+      return '<tr style="' + borderStyle + '"><td style="padding:11px 0;"><strong>' + f.label + '</strong><br><span style="font-size:15px; color:var(--p-grey-1);">' + f.desc + '</span></td><td style="padding:11px 0; text-align:right;"><span class="status ' + statusClass + '">' + statusLabel + '</span></td></tr>';
+    }).join('');
+
+    // Drive the advice options from the same findings
     var options = document.querySelectorAll('#decisionOptions .decision-opt');
     options.forEach(function(o){ o.classList.remove('selected'); o.querySelector('.status').textContent = 'Optional'; o.querySelector('.status').className = 'status status-low'; });
-
-    var meetingMatch = /meeting|agenda/.test(text);
-    var sensoryMatch = /noise|light|sensory/.test(text);
-    var escalationMatch = /capability|legal|long-term|complex/.test(text);
-
     if(meetingMatch || (!sensoryMatch && !escalationMatch)){
       options[0].classList.add('selected');
       options[0].querySelector('.status').textContent = 'Recommended';
@@ -648,9 +729,6 @@
       options[2].querySelector('.status').textContent = 'Recommended';
       options[2].querySelector('.status').className = 'status status-done';
     }
-
-    var flag = document.getElementById('escFlag');
-    if(escalationMatch){ flag.classList.add('show'); } else { flag.classList.remove('show'); }
 
     goTo('a2');
   }
