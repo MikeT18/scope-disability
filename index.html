@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disability Confident Portal — connected prototype</title>
+<style>
+  :root{
+    --p-black:#241C2C;
+    --p-purple:#6C2483;
+    --p-purple-dark:#4B2C5E;
+    --p-red:#D4351C;
+    --p-pink:#E6007E;
+    --p-yellow:#FFD600;
+    --p-grey-1:#5B5568;
+    --p-grey-3:#D5CEDD;
+    --p-grey-4:#F5F2F8;
+    --p-lilac-bg:#F0E6F5;
+    --p-white:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{font-family:"GDS Transport","nta",Arial,sans-serif; color:var(--p-black); background:#fff; font-size:19px; line-height:1.31579;}
+  a{color:var(--p-purple);}
+  a:focus, button:focus, input:focus, textarea:focus{outline:3px solid var(--p-yellow); outline-offset:0; box-shadow:inset 0 0 0 2px var(--p-black);}
+
+  .hd{background:var(--p-purple-dark); padding:10px 0;}
+  .hd-inner{max-width:960px; margin:0 auto; padding:0 15px; display:flex; align-items:center; gap:8px;}
+  .hd-logo{color:#fff; font-weight:700; font-size:24px;}
+  .hd-service{color:#fff; font-size:16px; border-left:1px solid #6b4f7d; padding-left:10px;}
+
+  .phase{border-bottom:1px solid var(--p-grey-3); padding:10px 0;}
+  .phase-inner{max-width:960px; margin:0 auto; padding:0 15px; display:flex; align-items:center; gap:10px; font-size:16px;}
+  .tag{background:var(--p-purple); color:#fff; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; padding:3px 8px;}
+
+  .wrap{max-width:960px; margin:0 auto; padding:0 15px;}
+  main{padding:30px 0 100px;}
+
+  .crumb{font-size:16px; color:var(--p-grey-1); margin:0 0 12px;}
+  .back{font-size:16px; display:inline-block; margin-bottom:20px; color:var(--p-black); text-decoration:none; position:relative; padding-left:14px;}
+  .back:before{content:""; position:absolute; left:0; top:5px; width:7px; height:7px; border-left:2px solid var(--p-black); border-bottom:2px solid var(--p-black); transform:rotate(45deg);}
+
+  h1{font-size:34px; font-weight:700; line-height:1.1; margin:0 0 16px;}
+  h2{font-size:23px; font-weight:700; margin:26px 0 10px;}
+  h3{font-size:19px; font-weight:700; margin:16px 0 6px;}
+  p{margin:0 0 14px;}
+  .bl{font-size:22px; font-weight:400; line-height:1.25; margin:0 0 18px;}
+  .hint{color:var(--p-grey-1); font-size:16px; margin:0 0 14px;}
+  .caption{color:var(--p-grey-1); font-size:16px; display:block; margin:0 0 4px;}
+
+  .btn{background:var(--p-purple); color:#fff; border:2px solid transparent; font-size:18px; padding:8px 14px 7px; box-shadow:0 2px 0 var(--p-purple-dark); cursor:pointer; display:inline-block; text-decoration:none; font-family:inherit;}
+  .btn:active{box-shadow:none; position:relative; top:2px;}
+  .btn-sec{background:var(--p-grey-4); color:var(--p-black); box-shadow:0 2px 0 #b9aec8;}
+  .btn-start{font-size:21px; padding:10px 16px 9px;}
+
+  textarea, input[type=text]{border:2px solid var(--p-black); padding:8px; font-size:18px; font-family:inherit; width:100%;}
+  label.lbl{display:block; font-weight:700; margin-bottom:6px;}
+
+  .inset{border-left:5px solid var(--p-grey-3); padding:12px 16px; margin:18px 0;}
+  .inset-purple{border-left-color:var(--p-purple); background:var(--p-lilac-bg);}
+  .panel{background:var(--p-purple); color:#fff; padding:22px; margin-bottom:26px;}
+  .panel-title{font-size:26px; font-weight:700; margin:0 0 6px;}
+
+  .warn{display:flex; align-items:flex-start; gap:10px; margin:18px 0;}
+  .warn-ic{background:var(--p-black); color:#fff; border-radius:50%; width:24px; height:24px; flex:none; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;}
+
+  .status{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:3px 8px; display:inline-block;}
+  .status-high{background:#f6d7d2; color:#942514;}
+  .status-med{background:#FBDDF0; color:#8C0059;}
+  .status-low{background:var(--p-grey-4); color:var(--p-grey-1);}
+  .status-done{background:#E7D6EF; color:#4B2C5E;}
+
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:26px;}
+  .card{border:1px solid var(--p-grey-3); padding:18px; text-decoration:none; color:inherit; display:block; cursor:pointer;}
+  .card:hover{background:var(--p-grey-4);}
+  .card h3{margin-top:0; color:var(--p-purple);}
+
+  .chatrow{display:flex; margin-bottom:12px;}
+  .chatrow.user{justify-content:flex-end;}
+  .bubble{padding:9px 13px; max-width:75%; font-size:16px; line-height:1.35;}
+  .bubble.user{background:var(--p-grey-4);}
+  .bubble.bot{background:var(--p-lilac-bg); border-left:4px solid var(--p-purple);}
+  .src{font-size:12px; color:var(--p-grey-1); margin-top:6px;}
+
+  .ring-wrap{display:flex; align-items:center; gap:22px; margin:18px 0;}
+  .ring{position:relative; width:96px; height:96px; flex:none;}
+  .ring svg{transform:rotate(-90deg);}
+  .ring .pct{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:17px;}
+  .checklist p{margin:0 0 7px; font-size:16px;}
+  .y{color:var(--p-purple); font-weight:700;} .n{color:var(--p-pink); font-weight:700;} .o{color:var(--p-grey-3); font-weight:700;}
+
+  .passport-field{border-bottom:1px solid var(--p-grey-3); padding:10px 0;}
+  .passport-field .k{font-size:13px; color:var(--p-grey-1); margin:0;}
+  .passport-field .v{font-size:17px; margin:2px 0 0;}
+
+  .script-item{border:1px solid var(--p-grey-3); padding:12px 14px; margin-bottom:10px;}
+  .script-item .lead{font-size:13px; color:var(--p-purple); font-weight:700; text-transform:uppercase; letter-spacing:0.4px; margin:0 0 4px;}
+
+  .decision-opt{border:1px solid var(--p-grey-3); padding:14px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:flex-start; gap:16px;}
+  .decision-opt.selected{border:2px solid var(--p-purple); background:var(--p-lilac-bg);}
+
+  .journey-track{display:flex; gap:6px; margin:0 0 22px; flex-wrap:wrap;}
+  .journey-track span{font-size:12px; padding:4px 10px; background:var(--p-grey-4); color:var(--p-grey-1);}
+  .journey-track span.on{background:var(--p-purple); color:#fff;}
+
+  .feedback{display:flex; align-items:center; gap:10px; margin:18px 0; padding:14px; background:var(--p-grey-4);}
+  .feedback button{background:#fff; border:1px solid var(--p-grey-3); font-size:20px; padding:4px 10px; cursor:pointer;}
+
+  footer{border-top:1px solid var(--p-grey-3); background:var(--p-grey-4); padding:22px 0; margin-top:30px;}
+  .foot-text{max-width:960px; margin:0 auto; padding:0 15px; font-size:14px; color:var(--p-grey-1);}
+
+  .kitnav{background:#1d1621; padding:12px 15px; position:sticky; top:0; z-index:60;}
+  .kitnav-inner{max-width:960px; margin:0 auto; display:flex; flex-wrap:wrap; gap:5px; align-items:center;}
+  .kitnav button{background:#2f2537; color:#fff; border:1px solid #4a3a55; font-size:12.5px; padding:5px 9px; cursor:pointer; font-family:inherit;}
+  .kitnav button.active{background:var(--p-purple); border-color:var(--p-purple);}
+  .kitnav .grp{color:#9c8fa8; font-size:11px; margin-right:2px;}
+  .screen{display:none;} .screen.active{display:block;}
+
+  .chat-launcher{position:fixed; bottom:22px; right:22px; background:var(--p-purple); color:#fff; border:none; border-radius:50px; padding:12px 20px; font-size:16px; font-weight:700; box-shadow:0 3px 10px rgba(0,0,0,0.25); cursor:pointer; z-index:80; font-family:inherit;}
+  .chat-overlay{position:fixed; bottom:80px; right:22px; width:340px; max-height:480px; background:#fff; border:1px solid var(--p-grey-3); box-shadow:0 6px 20px rgba(0,0,0,0.2); z-index:80; display:none; flex-direction:column;}
+  .chat-overlay.open{display:flex;}
+  .chat-overlay-hd{background:var(--p-purple-dark); color:#fff; padding:10px 14px; font-size:15px; font-weight:700; display:flex; justify-content:space-between; align-items:center;}
+  .chat-overlay-hd button{background:none; border:none; color:#fff; font-size:16px; cursor:pointer;}
+  .chat-overlay-body{padding:12px; overflow-y:auto; flex:1;}
+  .chat-suggest{display:block; width:100%; text-align:left; background:var(--p-grey-4); border:none; padding:8px 10px; margin-bottom:6px; font-size:13px; cursor:pointer; font-family:inherit;}
+
+  .err{border-left:5px solid var(--p-red); background:#FBEAE7; padding:12px 16px; margin:16px 0; display:none;}
+  .err.show{display:block;}
+  .err p{margin:0; font-weight:700; color:#942514;}
+  .gate-warn{border-left:5px solid var(--p-red); background:#FBEAE7; padding:14px 16px; margin:18px 0; display:none;}
+  .gate-warn.show{display:block;}
+  .esc-flag{border-left:5px solid var(--p-pink); background:#FBDDF0; padding:12px 16px; margin:0 0 18px; display:none; font-size:15px;}
+  .esc-flag.show{display:block;}
+  .rule-note{font-size:12px; color:var(--p-grey-1); margin:4px 0 0; font-style:italic;}
+</style>
+</head>
+<body>
+
+<nav class="kitnav">
+  <div class="kitnav-inner">
+    <span class="grp">HOME</span>
+    <button data-s="r1" class="nb active">Employer hub</button>
+    <span class="grp">RECRUITMENT</span>
+    <button data-s="rHub" class="nb">Tools</button>
+    <button data-s="r2" class="nb">Advert</button>
+    <button data-s="r3" class="nb">Advert results</button>
+    <button data-s="r4" class="nb">Interview</button>
+    <button data-s="r5" class="nb">Interview results</button>
+    <span class="grp">ONBOARDING</span>
+    <button data-s="oHub" class="nb">Starters</button>
+    <button data-s="oNew" class="nb">Add starter</button>
+    <button data-s="o1" class="nb">Dashboard</button>
+    <button data-s="o2" class="nb">Passport</button>
+    <button data-s="o3" class="nb">Coach</button>
+    <button data-s="o4" class="nb">Complete</button>
+    <span class="grp">ADJUSTMENTS</span>
+    <button data-s="aHub" class="nb">Requests</button>
+    <button data-s="a1" class="nb">Request</button>
+    <button data-s="a2" class="nb">Decision guide</button>
+    <button data-s="a3" class="nb">Escalation</button>
+    <button data-s="a4" class="nb">Agreed</button>
+    <span class="grp">EMPLOYEE</span>
+    <button data-s="p1" class="nb">Start</button>
+    <button data-s="p2" class="nb">Conversation</button>
+    <button data-s="p3" class="nb">Signposting</button>
+  </div>
+</nav>
+
+<header class="hd"><div class="hd-inner"><span class="hd-logo">Scope</span><span class="hd-service">Disability Confident Portal</span></div></header>
+<div class="phase"><div class="phase-inner"><span class="tag">Alpha</span><span>This is a new service — your feedback will help us improve it.</span></div></div>
+
+<main><div class="wrap">
+
+  <!-- R1 employer hub -->
+  <section id="r1" class="screen active">
+    <span class="caption">Disability Confident support</span>
+    <h1>Support for employers</h1>
+    <p class="bl">Three independent tools. Use whichever one fits what you need right now — there's no set order.</p>
+    <div class="grid2">
+      <a class="card nb" data-s="rHub"><h3>Recruitment tools &rarr;</h3><p>Check a job advert or an interview plan against Disability Confident guidance.</p></a>
+      <a class="card nb" data-s="oHub"><h3>Onboarding &rarr;</h3><p>Track and support a new starter, whether or not their advert was checked here.</p></a>
+      <a class="card nb" data-s="aHub"><h3>Adjustments &rarr;</h3><p>Get help agreeing a fair, timely workplace adjustment for anyone on your team.</p></a>
+      <a class="card nb" data-s="p1"><h3>Employee support &rarr;</h3><p>Guidance for jobseekers and employees instead.</p></a>
+    </div>
+    <p class="rule-note">These three tools don't feed into each other automatically. A person can be onboarded, or need an adjustment, without ever having had their advert or interview checked here.</p>
+  </section>
+
+  <!-- Recruitment hub -->
+  <section id="rHub" class="screen">
+    <a href="#" class="back nb" data-s="r1">Back to employer support</a>
+    <span class="caption">Recruitment</span>
+    <h1>Recruitment tools</h1>
+    <p>Check different parts of your hiring process independently — you don't need to do both.</p>
+    <div class="grid2">
+      <a class="card nb" data-s="r2"><h3>Check a job advert &rarr;</h3><p>Review wording, criteria and format before you post it.</p></a>
+      <a class="card nb" data-s="r4"><h3>Check your interview plan &rarr;</h3><p>Review questions, tasks and timing before you run interviews.</p></a>
+    </div>
+  </section>
+
+  <!-- R2 advert checker with CV upload -->
+  <section id="r2" class="screen">
+    <a href="#" class="back nb" data-s="rHub">Back to recruitment tools</a>
+    <span class="caption">Recruitment</span>
+    <h1>Check your job advert</h1>
+    <p>Paste your advert text below. We'll review it against Disability Confident scheme guidance and suggest improvements.</p>
+    <label class="lbl" for="advert">Job advert text</label>
+    <textarea id="advert" rows="6" placeholder="Paste job advert text here"></textarea>
+    <div class="err" id="advertErr"><p>Enter your advert text before checking it.</p></div>
+    <h2 style="margin-top:26px;">Check against a candidate's CV (optional)</h2>
+    <p class="hint">Upload a CV to check whether the role criteria and wording could create barriers for this candidate specifically.</p>
+    <label class="lbl" for="cv">Upload a CV</label>
+    <input type="file" id="cv" accept=".pdf,.doc,.docx" style="border:2px solid var(--p-black); padding:6px; font-family:inherit; font-size:15px;">
+    <p class="hint" style="margin-top:6px;">PDF, DOC or DOCX, up to 5MB</p>
+    <p style="margin-top:20px;"><button class="btn" onclick="checkAdvert()">Check advert</button></p>
+    <p class="rule-note">Logic: score starts at 100, minus 15 for each long sentence (25+ words), minus 20 if no adjustments statement is found, minus 10 for flagged phrases like "fast-paced" or "must be able to". Score below 40 blocks continuing until you acknowledge the high-priority findings.</p>
+  </section>
+
+  <!-- R3 advert results -->
+  <section id="r3" class="screen">
+    <a href="#" class="back nb" data-s="r2">Back</a>
+    <span class="caption">Recruitment</span>
+    <h1>Job advert accessibility checker</h1>
+    <div class="inset">
+      <span class="caption" style="margin-bottom:0;">Accessibility score</span>
+      <div style="font-size:30px; font-weight:700;"><span id="scoreVal">54</span><span style="font-size:15px; font-weight:400;">/100 — <span id="scoreLabel">needs improvement</span></span></div>
+    </div>
+    <h2>Findings</h2>
+    <table style="width:100%; border-collapse:collapse;" id="findingsTable">
+      <tr style="border-bottom:1px solid var(--p-grey-3);"><td style="padding:11px 0;"><strong>Complex wording</strong><br><span style="font-size:15px; color:var(--p-grey-1);">Long sentences may disadvantage candidates with dyslexia or cognitive differences.</span></td><td style="padding:11px 0; text-align:right;"><span class="status status-high">High</span></td></tr>
+      <tr style="border-bottom:1px solid var(--p-grey-3);"><td style="padding:11px 0;"><strong>Time pressure</strong><br><span style="font-size:15px; color:var(--p-grey-1);">60 minutes with no breaks disadvantages candidates who need processing time.</span></td><td style="padding:11px 0; text-align:right;"><span class="status status-high">High</span></td></tr>
+      <tr><td style="padding:11px 0;"><strong>Missing adjustment info</strong><br><span style="font-size:15px; color:var(--p-grey-1);">No statement explaining how to request adjustments.</span></td><td style="padding:11px 0; text-align:right;"><span class="status status-med">Medium</span></td></tr>
+    </table>
+    <div class="gate-warn" id="scoreGate">
+      <p style="margin:0; font-weight:700; color:#942514;">Score below 40 — high-priority findings should be fixed before publishing.</p>
+    </div>
+    <p style="margin-top:22px;"><button class="btn">See suggested rewrite</button> <button class="btn btn-sec nb" data-s="rHub">Back to recruitment tools</button></p>
+    <p class="rule-note">Rule: below 40, this warning shows and "See suggested rewrite" becomes the recommended next step. Checking your interview plan is a separate, optional tool — not a required next step.</p>
+  </section>
+
+  <!-- R4 interview checker -->
+  <section id="r4" class="screen">
+    <a href="#" class="back nb" data-s="rHub">Back to recruitment tools</a>
+    <span class="caption">Recruitment</span>
+    <h1>Check your interview questions and format</h1>
+    <p>List your planned interview questions and assessment tasks, and tell us the format.</p>
+    <label class="lbl" for="qs">Interview questions and tasks</label>
+    <textarea id="qs" rows="5" placeholder="e.g. Describe a time you handled competing priorities under pressure..."></textarea>
+    <div class="err" id="interviewErr"><p>Enter your interview plan, or upload a document, before checking it.</p></div>
+
+    <h2 style="margin-top:26px;">Or upload your interview plan</h2>
+    <p class="hint">Upload the document you use for the interview — question list, assessment brief, or panel scoring sheet.</p>
+    <label class="lbl" for="planFile">Upload a file</label>
+    <input type="file" id="planFile" accept=".pdf,.doc,.docx" style="border:2px solid var(--p-black); padding:6px; font-family:inherit; font-size:15px;" onchange="showPlanFileName()">
+    <p class="hint" style="margin-top:6px;">PDF, DOC or DOCX, up to 5MB</p>
+    <p class="hint" id="planFileName" style="display:none; font-weight:700; color:var(--p-black);"></p>
+
+    <label class="lbl" style="margin-top:14px;">Assessment format</label>
+    <p class="hint">In-person panel, 60 minutes, includes a timed written task</p>
+    <p style="margin-top:16px;"><button class="btn" onclick="checkInterview()">Check interview plan</button></p>
+    <p class="rule-note">Logic: you can type the plan directly, upload a document, or both — checking only requires one of the two. If a file is uploaded, its filename is shown here and it's treated the same as pasted text for scoring purposes.</p>
+  </section>
+
+  <!-- R5 interview results -->
+  <section id="r5" class="screen">
+    <a href="#" class="back nb" data-s="r4">Back</a>
+    <span class="caption">Recruitment</span>
+    <h1>Interview accessibility checker</h1>
+    <div class="inset"><span class="caption" style="margin-bottom:0;">Accessibility score</span><div style="font-size:30px; font-weight:700;">61<span style="font-size:15px; font-weight:400;">/100 — needs improvement</span></div></div>
+    <h2>Findings</h2>
+    <table style="width:100%; border-collapse:collapse;">
+      <tr style="border-bottom:1px solid var(--p-grey-3);"><td style="padding:11px 0;"><strong>Timed written task</strong><br><span style="font-size:15px; color:var(--p-grey-1);">Tests speed rather than skill; disadvantages candidates with dyslexia or processing differences.</span></td><td style="padding:11px 0; text-align:right;"><span class="status status-high">High</span></td></tr>
+      <tr><td style="padding:11px 0;"><strong>No adjustment prompt at invite</strong><br><span style="font-size:15px; color:var(--p-grey-1);">Candidates aren't told the format, or how they'd request a change to it.</span></td><td style="padding:11px 0; text-align:right;"><span class="status status-med">Medium</span></td></tr>
+    </table>
+    <p style="margin-top:22px;"><button class="btn btn-sec nb" data-s="rHub">Back to recruitment tools</button></p>
+    <p class="rule-note">This tool doesn't automatically create a candidate or starter record — onboarding and adjustments are separate tools, opened independently when someone actually starts.</p>
+  </section>
+
+  <!-- Onboarding hub -->
+  <section id="oHub" class="screen">
+    <a href="#" class="back nb" data-s="r1">Back to employer support</a>
+    <span class="caption">Onboarding</span>
+    <h1>Onboarding</h1>
+    <p>Select a starter to track their onboarding, or add a new one.</p>
+    <div id="starterList"></div>
+    <p style="margin-top:16px;"><button class="btn btn-sec nb" data-s="oNew">Add a new starter</button></p>
+  </section>
+
+  <!-- Add new starter -->
+  <section id="oNew" class="screen">
+    <a href="#" class="back nb" data-s="oHub">Back to onboarding</a>
+    <span class="caption">Onboarding</span>
+    <h1>Add a new starter</h1>
+    <label class="lbl" for="newName">Full name</label>
+    <input type="text" id="newName" placeholder="e.g. Jordan Ellis">
+    <div class="err" id="newNameErr"><p>Enter the starter's name.</p></div>
+    <label class="lbl" style="margin-top:14px;" for="newDate">Start date</label>
+    <input type="text" id="newDate" placeholder="e.g. 18 August 2026">
+    <div class="err" id="newDateErr"><p>Enter a start date.</p></div>
+    <label class="lbl" style="margin-top:14px;" for="newNeeds">Any known adjustments or needs (optional)</label>
+    <textarea id="newNeeds" rows="3" placeholder="e.g. Needs a height-adjustable desk and screen reader software"></textarea>
+    <p style="margin-top:18px;"><button class="btn" onclick="addStarter()">Add starter</button></p>
+    <p class="rule-note">Logic: a new starter is added with 0% progress and all four onboarding steps outstanding. If you entered known needs above, they're saved straight to their inclusion passport rather than waiting to be asked again.</p>
+  </section>
+
+  <!-- Adjustments hub -->
+  <section id="aHub" class="screen">
+    <a href="#" class="back nb" data-s="r1">Back to employer support</a>
+    <span class="caption">Adjustments</span>
+    <h1>Adjustments</h1>
+    <p>Open an existing request, or raise a new one for anyone on your team.</p>
+    <a class="card nb" data-s="a2"><h3>Priya Shah — in progress &rarr;</h3><p>Barrier described, awaiting decision</p></a>
+    <p style="margin-top:16px;"><button class="btn nb" data-s="a1">Raise a new adjustment request</button></p>
+  </section>
+
+  <!-- O1 dashboard -->
+  <section id="o1" class="screen">
+    <a href="#" class="back nb" data-s="oHub">Back to onboarding</a>
+    <span class="caption">Onboarding</span>
+    <h1 id="onboardName">Priya Shah</h1>
+    <p class="hint" id="onboardDate">Starts 4 August 2026</p>
+    <div class="ring-wrap">
+      <div class="ring"><svg width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" fill="none" stroke="#F0E6F5" stroke-width="11"/><circle id="ringProgress" cx="48" cy="48" r="40" fill="none" stroke="#6C2483" stroke-width="11" stroke-dasharray="251" stroke-dashoffset="88" stroke-linecap="round"/></svg><div class="pct" id="ringPct">65%</div></div>
+      <div class="checklist" id="onboardChecklist">
+        <p><span class="y">&#10003;</span> Inclusion passport shared</p>
+        <p><span class="y">&#10003;</span> Tech and equipment confirmed</p>
+        <p><span class="n">&#9675;</span> Day one conversation — due 4 Aug</p>
+        <p><span class="o">&#9675;</span> 30-day review — not yet due</p>
+      </div>
+    </div>
+    <p><button class="btn nb" data-s="o2">View inclusion passport</button> <button class="btn btn-sec nb" data-s="o3">Open conversation coach</button></p>
+    <p class="rule-note">Progress is calculated from the four steps below — each complete step adds 25%. New starters begin at 0% with all four outstanding.</p>
+  </section>
+
+  <!-- O2 inclusion passport -->
+  <section id="o2" class="screen">
+    <a href="#" class="back nb" data-s="o1">Back</a>
+    <span class="caption">Onboarding</span>
+    <h1>Inclusion passport — Priya Shah</h1>
+    <p class="hint">Shared once by Priya, reused across every manager and team she works with — she won't need to re-explain this.</p>
+    <div class="passport-field"><p class="k">Preferred communication</p><p class="v">Written follow-up after verbal meetings</p></div>
+    <div class="passport-field"><p class="k">Workstation needs</p><p class="v">Height-adjustable desk, screen reader software</p></div>
+    <div class="passport-field"><p class="k">Meeting adjustments</p><p class="v">Agenda shared 24 hours in advance where possible</p></div>
+    <div class="passport-field"><p class="k">What not to do</p><p class="v">No need to ask about diagnosis — happy to discuss specific support needs directly</p></div>
+    <p style="margin-top:20px;"><button class="btn nb" data-s="o3">Continue to conversation coach</button></p>
+  </section>
+
+  <!-- O3 conversation coach -->
+  <section id="o3" class="screen">
+    <a href="#" class="back nb" data-s="o1">Back</a>
+    <span class="caption">Onboarding</span>
+    <h1>Manager conversation coach</h1>
+    <p>Suggested wording for raising accessibility needs on day one, without pressure.</p>
+    <div class="script-item"><p class="lead">Opening</p><p style="margin:0;">"Welcome to the team — is there anything that would help you feel comfortable and do your best work from day one?"</p></div>
+    <div class="script-item"><p class="lead">If they share something</p><p style="margin:0;">"Thanks for telling me. I'll make sure that's in place — is there anyone else who needs to know, or should this stay between us?"</p></div>
+    <div class="script-item"><p class="lead">Things to avoid</p><p style="margin:0;">Asking about diagnosis or severity. Focus on what would help, not the underlying condition.</p></div>
+    <p style="margin-top:18px;"><button class="btn nb" data-s="o4">Mark day one conversation complete</button></p>
+  </section>
+
+  <!-- O4 onboarding complete -->
+  <section id="o4" class="screen">
+    <div class="panel"><div class="panel-title">Onboarding complete</div><div>All steps confirmed for Priya Shah</div></div>
+    <h2>What happens next</h2>
+    <p>A 30-day review has been scheduled automatically to check whether support is still working.</p>
+    <p>If anything changes before then, Priya or her manager can raise it any time.</p>
+    <div class="feedback">
+      <span style="font-size:15px;">Was this onboarding flow useful?</span>
+      <button>&#128077;</button><button>&#128078;</button>
+    </div>
+    <p><button class="btn btn-sec nb" data-s="a1">Raise an adjustment request</button> <a href="#" class="nb" data-s="r1">Return to employer support</a></p>
+  </section>
+
+  <!-- A1 request -->
+  <section id="a1" class="screen">
+    <a href="#" class="back nb" data-s="aHub">Back to adjustments</a>
+    <span class="caption">Adjustments</span>
+    <h1>Raise an adjustment request — Priya Shah</h1>
+    <p>Describe the workplace barrier, not a diagnosis — this keeps the focus on what would help.</p>
+    <label class="lbl" for="barrier">What's the barrier?</label>
+    <textarea id="barrier" rows="4" placeholder="e.g. Priya finds long, unstructured meetings hard to follow and retain information from."></textarea>
+    <p style="margin-top:18px;"><button class="btn" onclick="exploreOptions()">Explore options</button></p>
+    <p class="rule-note">Logic: mentions of "meeting" or "agenda" recommend the agenda/notes options below. Mentions of "noise", "light" or "sensory" recommend an environment change instead. Mentions of "capability", "legal", "long-term" or "complex" automatically flag the case for escalation.</p>
+  </section>
+
+  <!-- A2 decision guide -->
+  <section id="a2" class="screen">
+    <a href="#" class="back nb" data-s="a1">Back</a>
+    <span class="caption">Adjustments</span>
+    <h1>Reasonable adjustment decision guide — Priya Shah</h1>
+    <p class="hint">Guidance, not legal advice. For complex or high-risk cases, involve HR or occupational health.</p>
+    <div class="esc-flag" id="escFlag"><strong>Flagged for escalation</strong> — this description mentions something outside standard guidance. Recommend using "This needs escalating" below rather than agreeing a decision here.</div>
+    <div id="decisionOptions">
+      <div class="decision-opt selected"><div><h3 style="margin:0 0 4px;">Share agenda and key points in advance</h3><p style="margin:0; font-size:15px; color:var(--p-grey-1);">Low cost, quick to implement, addresses the barrier directly.</p></div><span class="status status-done">Recommended</span></div>
+      <div class="decision-opt"><div><h3 style="margin:0 0 4px;">Provide written follow-up notes after each meeting</h3><p style="margin:0; font-size:15px; color:var(--p-grey-1);">Complements the above; low cost.</p></div><span class="status status-low">Optional</span></div>
+      <div class="decision-opt"><div><h3 style="margin:0 0 4px;">Reduce meeting frequency</h3><p style="margin:0; font-size:15px; color:var(--p-grey-1);">May affect team coordination — check with Priya before applying.</p></div><span class="status status-med">Needs discussion</span></div>
+    </div>
+    <p style="margin-top:18px;"><button class="btn nb" data-s="a4">Agree and record decision</button> <button class="btn btn-sec nb" data-s="a3">This needs escalating</button></p>
+  </section>
+
+  <!-- A3 escalation -->
+  <section id="a3" class="screen">
+    <a href="#" class="back nb" data-s="a2">Back</a>
+    <span class="caption">Adjustments</span>
+    <h1>Escalate this request</h1>
+    <div class="warn"><span class="warn-ic">!</span><span style="font-size:16px; color:var(--p-grey-1);">This looks like it may need specialist input beyond this guide.</span></div>
+    <div class="grid2">
+      <div class="card"><h3>Occupational health</h3><p>For complex health-related adjustments or capability questions.</p></div>
+      <div class="card"><h3>Access to Work</h3><p>For funded equipment, support workers or travel costs.</p></div>
+      <div class="card"><h3>HR / legal</h3><p>For anything with employment law implications.</p></div>
+    </div>
+    <p style="margin-top:18px;"><button class="btn nb" data-s="a4">Record referral and continue</button></p>
+  </section>
+
+  <!-- A4 agreed -->
+  <section id="a4" class="screen">
+    <div class="panel"><div class="panel-title">Adjustment agreed</div><div>Recorded for Priya Shah — review scheduled in 60 days</div></div>
+    <h3>Decision record</h3>
+    <div class="passport-field"><p class="k">Agreed adjustment</p><p class="v">Meeting agendas shared 24 hours in advance</p></div>
+    <div class="passport-field"><p class="k">Owner</p><p class="v">Line manager</p></div>
+    <div class="passport-field"><p class="k">Review date</p><p class="v">13 September 2026</p></div>
+    <div class="feedback"><span style="font-size:15px;">Did this guide help you reach a decision?</span><button>&#128077;</button><button>&#128078;</button></div>
+    <p style="margin-top:14px;"><a href="#" class="nb" data-s="r1">Return to employer support</a></p>
+  </section>
+
+  <!-- P1 -->
+  <section id="p1" class="screen">
+    <span class="caption">Disability Confident support</span>
+    <h1>Get support finding and starting work</h1>
+    <p class="bl">Ask about disclosing a condition, workplace adjustments, or how starting a job affects your benefits.</p>
+    <div class="grid2">
+      <a class="card nb" data-s="p2"><h3>Will a job affect my benefits? &rarr;</h3></a>
+      <a class="card nb" data-s="p2"><h3>Do I have to tell my employer? &rarr;</h3></a>
+    </div>
+    <p style="margin-top:22px;"><button class="btn btn-start nb" data-s="p2">Start a conversation</button></p>
+    <p>Here as an employer instead? <a href="#" class="nb" data-s="r1">Go to employer tools</a></p>
+  </section>
+
+  <!-- P2 -->
+  <section id="p2" class="screen">
+    <a href="#" class="back nb" data-s="p1">Back</a>
+    <h1>Ask about work and benefits</h1>
+    <div class="chatrow user"><div class="bubble user">I've just been offered a job. Do I need to tell them about my condition, and will it affect my PIP?</div></div>
+    <div class="chatrow"><div class="bubble bot">You don't have to disclose a condition unless it's relevant to a specific adjustment you need — it's your choice. PIP is not affected by starting work or how much you earn, since it's based on the impact of your condition, not your income.<div class="src">Source: GOV.UK — PIP eligibility; Scope employment toolkit</div></div></div>
+    <div class="chatrow user"><div class="bubble user">How do I ask for adjustments without it feeling awkward?</div></div>
+    <div style="display:flex; gap:8px; margin-top:18px;"><input type="text" id="p2input" placeholder="Type your question"><button class="btn" onclick="triage(document.getElementById('p2input').value)">Ask</button></div>
+    <p class="rule-note">Logic: "advert"/"job" routes to the recruitment checker. "onboard"/"day one" routes to the conversation coach. "adjust"/"barrier" routes to the decision guide. "benefit"/"pip" routes to signposting. Anything else stays here as a direct chat answer.</p>
+  </section>
+
+  <!-- P3 -->
+  <section id="p3" class="screen">
+    <a href="#" class="back nb" data-s="p2">Back</a>
+    <h1>Guidance</h1>
+    <div class="inset inset-purple">Try something simple and direct, for example: "It would help me if we could agree X before I start." You don't need to explain your diagnosis — just the support that helps.<div class="src">Source: Scope employee toolkit</div></div>
+    <h2>Where to go next</h2>
+    <p><a href="#">Access to Work</a> — funding for equipment or support</p>
+    <p><a href="#">Citizens Advice</a> — free, independent employment advice</p>
+    <p><a href="#">Your employer's HR team</a> — to formally request adjustments</p>
+    <div class="warn"><span class="warn-ic">!</span><span style="font-size:15px; color:var(--p-grey-1);">This tool gives general guidance. It does not replace advice from DWP, Access to Work or a legal adviser.</span></div>
+    <p><a href="#" class="nb" data-s="p1">Return to employee support</a></p>
+  </section>
+
+</div></main>
+
+<footer><div class="foot-text">Built in the GOV.UK Design System style, recoloured to Scope's brand palette, for the Disability Confident Portal Alpha.</div></footer>
+
+<button class="chat-launcher" id="chatBtn">Ask a question</button>
+<div class="chat-overlay" id="chatPanel">
+  <div class="chat-overlay-hd"><span>Ask about Disability Confident support</span><button id="chatClose">&times;</button></div>
+  <div class="chat-overlay-body">
+    <p style="font-size:13px; color:var(--p-grey-1); margin:0 0 10px;">Available on every screen. Routes you to the right tool for your question.</p>
+    <div style="display:flex; gap:6px; margin-bottom:10px;"><input type="text" id="globalChatInput" placeholder="Type a question" style="flex:1; font-size:14px; padding:6px;"><button class="btn" style="padding:6px 10px; font-size:13px;" onclick="triage(document.getElementById('globalChatInput').value)">Go</button></div>
+    <button class="chat-suggest nb" data-s="r2">Check a job advert</button>
+    <button class="chat-suggest nb" data-s="o3">How do I raise access needs sensitively?</button>
+    <button class="chat-suggest nb" data-s="a2">What adjustment should I offer?</button>
+    <button class="chat-suggest nb" data-s="p2">Will this affect my benefits?</button>
+  </div>
+</div>
+
+<script>
+  function goTo(target){
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById(target).classList.add('active');
+    document.querySelectorAll('.kitnav .nb').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.kitnav .nb[data-s="'+target+'"]').forEach(function(b){ b.classList.add('active'); });
+    window.scrollTo({top:0, behavior:'instant'});
+    document.getElementById('chatPanel').classList.remove('open');
+  }
+  document.querySelectorAll('.nb, .chat-suggest').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      goTo(btn.getAttribute('data-s'));
+    });
+  });
+  document.getElementById('chatBtn').addEventListener('click', function(){
+    document.getElementById('chatPanel').classList.toggle('open');
+  });
+  document.getElementById('chatClose').addEventListener('click', function(){
+    document.getElementById('chatPanel').classList.remove('open');
+  });
+
+  // --- Advert checker logic ---
+  function checkAdvert(){
+    var text = document.getElementById('advert').value.trim();
+    var errBox = document.getElementById('advertErr');
+    if(text.length === 0){
+      errBox.classList.add('show');
+      return;
+    }
+    errBox.classList.remove('show');
+    var score = 100;
+    var sentences = text.split(/[.!?]/).filter(function(s){ return s.trim().length > 0; });
+    var longSentences = sentences.filter(function(s){ return s.trim().split(/\s+/).length >= 25; }).length;
+    score -= longSentences * 15;
+    var hasAdjustmentsStatement = /adjustment|accessib/i.test(text);
+    if(!hasAdjustmentsStatement) score -= 20;
+    var flaggedPhrases = ["fast-paced","must be able to","tight deadlines","thrive under pressure"];
+    flaggedPhrases.forEach(function(p){ if(text.toLowerCase().indexOf(p) !== -1) score -= 10; });
+    if(score < 0) score = 0;
+    if(score > 100) score = 100;
+
+    document.getElementById('scoreVal').textContent = score;
+    var label = score >= 70 ? "good" : score >= 40 ? "needs improvement" : "needs significant work";
+    document.getElementById('scoreLabel').textContent = label;
+
+    var gate = document.getElementById('scoreGate');
+    if(score < 40){ gate.classList.add('show'); } else { gate.classList.remove('show'); }
+    goTo('r3');
+  }
+
+  // --- Interview plan upload logic ---
+  function showPlanFileName(){
+    var fileInput = document.getElementById('planFile');
+    var label = document.getElementById('planFileName');
+    if(fileInput.files.length > 0){
+      label.textContent = "Uploaded: " + fileInput.files[0].name;
+      label.style.display = 'block';
+      document.getElementById('interviewErr').classList.remove('show');
+    } else {
+      label.style.display = 'none';
+    }
+  }
+
+  function checkInterview(){
+    var text = document.getElementById('qs').value.trim();
+    var hasFile = document.getElementById('planFile').files.length > 0;
+    var errBox = document.getElementById('interviewErr');
+    if(text.length === 0 && !hasFile){
+      errBox.classList.add('show');
+      return;
+    }
+    errBox.classList.remove('show');
+    goTo('r5');
+  }
+
+  // --- Onboarding: starter data store ---
+  var starters = [
+    { name: "Priya Shah", start: "4 August 2026", steps: { passport: true, tech: true, dayone: false, review: false } }
+  ];
+  var currentStarter = 0;
+
+  function renderStarterList(){
+    var list = document.getElementById('starterList');
+    list.innerHTML = '';
+    starters.forEach(function(s, i){
+      var pct = pctFor(s);
+      var card = document.createElement('a');
+      card.className = 'card';
+      card.href = '#';
+      card.innerHTML = '<h3>' + s.name + ' &rarr;</h3><p>Starts ' + s.start + ' — ' + pct + '% complete</p>';
+      card.addEventListener('click', function(e){ e.preventDefault(); currentStarter = i; renderDashboard(); goTo('o1'); });
+      list.appendChild(card);
+    });
+  }
+
+  function pctFor(s){
+    var done = Object.values(s.steps).filter(Boolean).length;
+    return done * 25;
+  }
+
+  function renderDashboard(){
+    var s = starters[currentStarter];
+    var pct = pctFor(s);
+    document.getElementById('onboardName').textContent = s.name;
+    document.getElementById('onboardDate').textContent = 'Starts ' + s.start;
+    document.getElementById('ringPct').textContent = pct + '%';
+    var circumference = 251;
+    document.getElementById('ringProgress').setAttribute('stroke-dashoffset', circumference - (circumference * pct / 100));
+
+    var checklist = document.getElementById('onboardChecklist');
+    var rows = [
+      { key: 'passport', label: 'Inclusion passport shared' },
+      { key: 'tech', label: 'Tech and equipment confirmed' },
+      { key: 'dayone', label: 'Day one conversation' },
+      { key: 'review', label: '30-day review' }
+    ];
+    checklist.innerHTML = rows.map(function(r){
+      var mark = s.steps[r.key] ? '<span class="y">&#10003;</span>' : '<span class="n">&#9675;</span>';
+      return '<p>' + mark + ' ' + r.label + '</p>';
+    }).join('');
+  }
+
+  function addStarter(){
+    var name = document.getElementById('newName').value.trim();
+    var date = document.getElementById('newDate').value.trim();
+    var needs = document.getElementById('newNeeds').value.trim();
+    var nameErr = document.getElementById('newNameErr');
+    var dateErr = document.getElementById('newDateErr');
+    var valid = true;
+    if(name.length === 0){ nameErr.classList.add('show'); valid = false; } else { nameErr.classList.remove('show'); }
+    if(date.length === 0){ dateErr.classList.add('show'); valid = false; } else { dateErr.classList.remove('show'); }
+    if(!valid) return;
+
+    starters.push({
+      name: name,
+      start: date,
+      steps: { passport: needs.length > 0, tech: false, dayone: false, review: false }
+    });
+    currentStarter = starters.length - 1;
+    document.getElementById('newName').value = '';
+    document.getElementById('newDate').value = '';
+    document.getElementById('newNeeds').value = '';
+    renderStarterList();
+    renderDashboard();
+    goTo('o1');
+  }
+
+  renderStarterList();
+  renderDashboard();
+
+  // --- Adjustment request / decision guide logic ---
+  function exploreOptions(){
+    var text = document.getElementById('barrier').value.toLowerCase();
+    var options = document.querySelectorAll('#decisionOptions .decision-opt');
+    options.forEach(function(o){ o.classList.remove('selected'); o.querySelector('.status').textContent = 'Optional'; o.querySelector('.status').className = 'status status-low'; });
+
+    var meetingMatch = /meeting|agenda/.test(text);
+    var sensoryMatch = /noise|light|sensory/.test(text);
+    var escalationMatch = /capability|legal|long-term|complex/.test(text);
+
+    if(meetingMatch || (!sensoryMatch && !escalationMatch)){
+      options[0].classList.add('selected');
+      options[0].querySelector('.status').textContent = 'Recommended';
+      options[0].querySelector('.status').className = 'status status-done';
+    } else if(sensoryMatch){
+      options[2].classList.add('selected');
+      options[2].querySelector('.status').textContent = 'Recommended';
+      options[2].querySelector('.status').className = 'status status-done';
+    }
+
+    var flag = document.getElementById('escFlag');
+    if(escalationMatch){ flag.classList.add('show'); } else { flag.classList.remove('show'); }
+
+    goTo('a2');
+  }
+
+  // --- Chatbot triage logic ---
+  function triage(text){
+    text = (text || '').toLowerCase();
+    if(/advert|job\b/.test(text)){ goTo('r2'); }
+    else if(/onboard|day one/.test(text)){ goTo('o3'); }
+    else if(/adjust|barrier/.test(text)){ goTo('a1'); }
+    else if(/benefit|pip/.test(text)){ goTo('p3'); }
+    else { goTo('p2'); }
+  }
+</script>
+
+</body>
+</html>
