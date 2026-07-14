@@ -122,6 +122,7 @@
   .chat-overlay-hd{background:var(--p-purple-dark); color:#fff; padding:10px 14px; font-size:15px; font-weight:700; display:flex; justify-content:space-between; align-items:center;}
   .chat-overlay-hd button{background:none; border:none; color:#fff; font-size:16px; cursor:pointer;}
   .chat-overlay-body{padding:12px; overflow-y:auto; flex:1;}
+  #globalLog{max-height:220px; overflow-y:auto;}
   .chat-suggest{display:block; width:100%; text-align:left; background:var(--p-grey-4); border:none; padding:8px 10px; margin-bottom:6px; font-size:13px; cursor:pointer; font-family:inherit;}
 
   .err{border-left:5px solid var(--p-red); background:#FBEAE7; padding:12px 16px; margin:16px 0; display:none;}
@@ -438,11 +439,12 @@
   <section id="p2" class="screen">
     <a href="#" class="back nb" data-s="p1">Back</a>
     <h1>Ask about work and benefits</h1>
-    <div class="chatrow user"><div class="bubble user">I've just been offered a job. Do I need to tell them about my condition, and will it affect my PIP?</div></div>
-    <div class="chatrow"><div class="bubble bot">You don't have to disclose a condition unless it's relevant to a specific adjustment you need — it's your choice. PIP is not affected by starting work or how much you earn, since it's based on the impact of your condition, not your income.<div class="src">Source: GOV.UK — PIP eligibility; Scope employment toolkit</div></div></div>
-    <div class="chatrow user"><div class="bubble user">How do I ask for adjustments without it feeling awkward?</div></div>
-    <div style="display:flex; gap:8px; margin-top:18px;"><input type="text" id="p2input" placeholder="Type your question"><button class="btn" onclick="triage(document.getElementById('p2input').value)">Ask</button></div>
-    <p class="rule-note">Logic: "advert"/"job" routes to the recruitment checker. "onboard"/"day one" routes to the conversation coach. "adjust"/"barrier" routes to the decision guide. "benefit"/"pip" routes to signposting. Anything else stays here as a direct chat answer.</p>
+    <div id="p2log">
+      <div class="chatrow user"><div class="bubble user">I've just been offered a job. Do I need to tell them about my condition, and will it affect my PIP?</div></div>
+      <div class="chatrow"><div class="bubble bot">You don't have to disclose a condition unless it's relevant to a specific adjustment you need — it's your choice. PIP is not affected by starting work or how much you earn, since it's based on the impact of your condition, not your income.<div class="src">Source: GOV.UK — PIP eligibility; Scope employment toolkit</div></div></div>
+    </div>
+    <div style="display:flex; gap:8px; margin-top:18px;"><input type="text" id="p2input" placeholder="Type your question" onkeydown="if(event.key==='Enter'){askP2();}"><button class="btn" onclick="askP2()">Ask</button></div>
+    <p class="rule-note">Try: "how do I ask for adjustments", "will work affect my benefits", "access to work", "do I have to tell my employer". Each answer is matched from a small knowledge base and shows its source — anything unmatched gets an honest "I don't have guidance on that" reply rather than a guess.</p>
   </section>
 
   <!-- P3 -->
@@ -466,12 +468,13 @@
 <div class="chat-overlay" id="chatPanel">
   <div class="chat-overlay-hd"><span>Ask about Disability Confident support</span><button id="chatClose">&times;</button></div>
   <div class="chat-overlay-body">
-    <p style="font-size:13px; color:var(--p-grey-1); margin:0 0 10px;">Available on every screen. Routes you to the right tool for your question.</p>
-    <div style="display:flex; gap:6px; margin-bottom:10px;"><input type="text" id="globalChatInput" placeholder="Type a question" style="flex:1; font-size:14px; padding:6px;"><button class="btn" style="padding:6px 10px; font-size:13px;" onclick="triage(document.getElementById('globalChatInput').value)">Go</button></div>
+    <div id="globalLog" style="margin-bottom:10px;"></div>
+    <div style="display:flex; gap:6px; margin-bottom:10px;"><input type="text" id="globalChatInput" placeholder="Type a question" style="flex:1; font-size:14px; padding:6px;" onkeydown="if(event.key==='Enter'){askGlobal();}"><button class="btn" style="padding:6px 10px; font-size:13px;" onclick="askGlobal()">Ask</button></div>
+    <p style="font-size:11px; color:var(--p-grey-1); margin:0 0 8px;">Or jump straight to a tool:</p>
     <button class="chat-suggest nb" data-s="r2">Check a job advert</button>
-    <button class="chat-suggest nb" data-s="o3">How do I raise access needs sensitively?</button>
-    <button class="chat-suggest nb" data-s="a2">What adjustment should I offer?</button>
-    <button class="chat-suggest nb" data-s="p2">Will this affect my benefits?</button>
+    <button class="chat-suggest nb" data-s="o3">Onboarding conversation coach</button>
+    <button class="chat-suggest nb" data-s="a2">Adjustment decision guide</button>
+    <button class="chat-suggest nb" data-s="p2">Benefits and disclosure support</button>
   </div>
 </div>
 
@@ -652,14 +655,91 @@
     goTo('a2');
   }
 
-  // --- Chatbot triage logic ---
-  function triage(text){
+  // --- Chatbot knowledge base ---
+  var knowledgeBase = [
+    { keywords: ["disclos", "tell my employer", "tell them"],
+      answer: "You don't have to disclose a condition to your employer unless it's relevant to a specific adjustment you need — it's your choice, and you can share only what's needed to get the support in place.",
+      source: "Scope employment toolkit — disclosure",
+      route: "p3", routeLabel: "See more on disclosure and support" },
+    { keywords: ["pip", "benefit", "affect my pay", "universal credit"],
+      answer: "PIP is not affected by starting work or how much you earn, since it's based on the impact of your condition, not your income or employment status.",
+      source: "GOV.UK — PIP eligibility",
+      route: "p3", routeLabel: "See more on benefits and work" },
+    { keywords: ["ask for adjust", "how do i ask", "request adjust", "awkward"],
+      answer: "Try something simple and direct, e.g. \"It would help me if we could agree X before I start.\" You don't need to explain your diagnosis — just the support that helps.",
+      source: "Scope employee toolkit — asking for adjustments",
+      route: "p3", routeLabel: "See where to go next" },
+    { keywords: ["access to work"],
+      answer: "Access to Work can fund equipment, support workers or travel costs related to a disability or health condition, on top of anything your employer provides.",
+      source: "GOV.UK — Access to Work",
+      route: "p3", routeLabel: "See signposting" },
+    { keywords: ["advert", "job posting", "job ad"],
+      answer: "I can check a job advert for wording, criteria or format that might create barriers, and suggest more inclusive alternatives.",
+      source: "Recruitment barrier checker",
+      route: "r2", routeLabel: "Open the advert checker" },
+    { keywords: ["interview", "assessment"],
+      answer: "I can check your interview questions and assessment format for anything that might disadvantage candidates, like tight timing or memory-heavy tasks.",
+      source: "Recruitment barrier checker",
+      route: "r4", routeLabel: "Open the interview checker" },
+    { keywords: ["onboard", "day one", "new starter"],
+      answer: "For a new starter, day one works best as a simple, low-pressure conversation about what would help them do their best work — not a formal disclosure meeting.",
+      source: "Manager conversation coach",
+      route: "o3", routeLabel: "Open the conversation coach" },
+    { keywords: ["adjust", "barrier", "reasonable adjustment"],
+      answer: "Describe the workplace barrier rather than a diagnosis, and I can suggest fair, practical options and flag if a case needs escalating to HR or occupational health.",
+      source: "Reasonable adjustment decision guide",
+      route: "a1", routeLabel: "Open the adjustment request tool" }
+  ];
+
+  function matchKB(text){
     text = (text || '').toLowerCase();
-    if(/advert|job\b/.test(text)){ goTo('r2'); }
-    else if(/onboard|day one/.test(text)){ goTo('o3'); }
-    else if(/adjust|barrier/.test(text)){ goTo('a1'); }
-    else if(/benefit|pip/.test(text)){ goTo('p3'); }
-    else { goTo('p2'); }
+    for(var i = 0; i < knowledgeBase.length; i++){
+      var kb = knowledgeBase[i];
+      for(var j = 0; j < kb.keywords.length; j++){
+        if(text.indexOf(kb.keywords[j]) !== -1) return kb;
+      }
+    }
+    return null;
+  }
+
+  function appendChat(logId, cls, html){
+    var log = document.getElementById(logId);
+    var row = document.createElement('div');
+    row.className = 'chatrow' + (cls === 'user' ? ' user' : '');
+    var bubble = document.createElement('div');
+    bubble.className = 'bubble ' + (cls === 'user' ? 'user' : 'bot');
+    bubble.innerHTML = html;
+    row.appendChild(bubble);
+    log.appendChild(row);
+    log.scrollTop = log.scrollHeight;
+    row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function respondTo(logId, text){
+    if(text.trim().length === 0) return;
+    appendChat(logId, 'user', text.replace(/</g, '&lt;'));
+    var match = matchKB(text);
+    if(match){
+      var html = match.answer + '<div class="src">Source: ' + match.source + '</div>';
+      if(match.route){
+        html += '<button class="btn btn-sec" style="margin-top:8px; font-size:12px; padding:5px 10px;" onclick="goTo(\'' + match.route + '\')">' + match.routeLabel + '</button>';
+      }
+      appendChat(logId, 'bot', html);
+    } else {
+      appendChat(logId, 'bot', 'I don\'t have specific guidance on that yet. Try asking about disclosure, adjustments, benefits, Access to Work, job adverts, interviews, or onboarding.');
+    }
+  }
+
+  function askP2(){
+    var input = document.getElementById('p2input');
+    respondTo('p2log', input.value);
+    input.value = '';
+  }
+
+  function askGlobal(){
+    var input = document.getElementById('globalChatInput');
+    respondTo('globalLog', input.value);
+    input.value = '';
   }
 </script>
 
